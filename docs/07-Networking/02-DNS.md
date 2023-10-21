@@ -3,6 +3,8 @@
   - Take me to the [Tutorial](https://kodekloud.com/topic/dns/)
 
   - The domain name system is a distributed way to share these name-to-IP associations instead of requiring each computer to synchronize a hosts file. A name server publishes the IP address for a domain and provides a single location to update when an IP changes.
+  - It's the phone book of internet: a system that converts website domain names (hostnames) into numerical values (IP address) so they can be found and loaded into web browsers.
+  - Hostname-to-IP address conversion: called DNS resolution
 
   
   #### Ping 
@@ -127,3 +129,31 @@
 # HANDS-ON LABS
   
   - Lets have some fun and challenging [exercises](https://kodekloud.com/courses/873064/lectures/17074530)
+
+# Question:
+- What is the IP address of the DNS Server used in this system?
+ans: steps to check
+ look in /etc/resolv.conf file 
+run: cat /etc/resolv.conf and look at the server's IP address ( usually named as nameserver)
+
+- Which order is used currently to resolve an IP address in the system?
+: /etc/hosts file and then dns server ( defined in /etc/resolv.conf)
+
+- change the order : DNS first and then files
+ans: Update /etc/nsswitch.conf and change the line to hosts:   dns files
+
+- Which search domain is configured in this system ?
+bob@caleston-lp10:~$ cat /etc/resolv.conf
+search caleston.ca
+nameserver 8.8.8.8
+options ndots:0
+ans: caleston.ca
+
+- Which file is responsible for host file-based DNS resolution?
+Ans: /etc/hosts
+- What is the configuration file used for the DNS Server?
+Ans: /etc/resolv.conf
+- Change the DNS Server to google's DNS which is 8.8.8.8
+Ans: 
+$ sudo vi /etc/resolv.conf
+( Edit the /etc/resolv.conf file and change the nameserver IP to 8.8.8.8 )
