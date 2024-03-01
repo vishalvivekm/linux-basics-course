@@ -131,3 +131,104 @@
 ## HANDS-ON LABS
 
   - Now lets troubleshoot and help **`Bob`** [Let's Help Bob](https://kodekloud.com/courses/the-linux-basics-course/lectures/17074647)
+
+<hr />
+
+<details>
+  <summary>Lab: lab</summary>
+
+
+> What is the status of the sample.service unit?
+  ans: run `sudo systemctl status sample.service
+  ans: Inactive(dead)
+  check the config file: /etc/systemd/system/sample.service:
+
+```yaml
+[Unit]
+Description=A template service unit file. Use this to create a service
+
+[Service]
+ExecStart=
+
+[Install]
+WantedBy=multi-user.target
+```
+
+- Let's try to start the service: `systemctl start sample.servcie`
+
+```Failed to start sample.service: Unit sample.service is not loaded properly: Invalid argument.
+See system logs and 'systemctl status sample.service' for details.
+```
+
+> why did it fail?
+- run `sudo journalctl -u sample-service`
+
+```
+sample.service: Service lacks both ExecStart= and ExecStop= setting. Refusing.
+```
+> service section not defined
+
+- Update the [Service] section
+Set the ExecStart to run the script /bin/bash /root/sample_script.sh.
+Once done, start the service.
+
+> Run: sudo vi /etc/systemd/system/sample.service
+
+Add /bin/bash /root/sample_script.sh to ExecStart
+
+Save and Exit.
+
+and then start the service: - sudo systemctl start sample.service
+
+> sudo systemctl status sample.service: Active[Running]
+
+> Enable this service now so that it will be started automatically after a reboot for multi-user.target
+> bob@caleston-lp10:~$ sudo systemctl enable sample.service
+Created symlink /etc/systemd/system/multi-user.target.wants/sample.service → /etc/systemd/system/sample.service.
+
+```
+Now update the service to ensure that it restarts when stopped for any reason.
+user Restart=always derivative.
+
+```
+>
+```
+Run: sudo vi /etc/systemd/system/sample.service
+
+Add Restart=always to the Service section.
+
+Save and Exit
+```
+
+```
+[Unit]
+Description=A template service unit file. Use this to create a service
+
+[Service]
+ExecStart= /bin/bash /root/sample_script.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+> Try and restart the service now. There seems to be a warning. What is the fix?
+
+```
+sudo systemctl start sample.service or restart will fail.
+Since you updated the service unit file, you need to reload it first.
+```
+
+```
+$ sudo systemctl restart sample.service
+
+Warning: The unit file, source configuration file or drop-ins of sample.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+```
+> reload the unit; by `sudo systemctl daemon-reload`
+
+```
+How would you check the errors encountered earlier when the sample service did not have a valid service section?
+```
+ans: journalctl -u sample.service
+
+</details>
