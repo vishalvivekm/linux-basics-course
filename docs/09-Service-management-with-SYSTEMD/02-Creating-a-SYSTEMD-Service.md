@@ -57,3 +57,67 @@ In this lecture we will learn how to create a SYSTEMD Service.
 
   [~]$ systemctl start project-mercury.service
   ```
+<hr />
+
+#### Additional: 
+
+Mar 1, 2024: 
+Systemd: 
+
+`$ systemctl status docker`
+```
+● docker.service - Docker Application Container Engine
+     Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled)
+     Active: active (running) since Fri 2024-03-01 10:35:48 IST; 1h 39min ago
+TriggeredBy: ● docker.socket
+       Docs: https://docs.docker.com
+   Main PID: 2519 (dockerd)
+      Tasks: 50
+     Memory: 84.4M
+        CPU: 2.264s
+     CGroup: /system.slice/docker.service
+             └─2519 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+
+Mar 01 10:35:45 Laptop-LX dockerd[2519]: time="2024-03-01T10:35:45.266200660+05:30" level=info msg=>
+Mar 01 10:35:45 Laptop-LX dockerd[2519]: time="2024-03-01T10:35:45.284581418+05:30" level=info msg=>
+Mar 01 10:35:45 Laptop-LX dockerd[2519]: time="2024-03-01T10:35:45.976754166+05:30" level=info msg=>
+Mar 01 10:35:46 Laptop-LX dockerd[2519]: time="2024-03-01T10:35:46.412658659+05:30" level=info msg=>
+Mar 01 10:35:47 Laptop-LX dockerd[2519]: time="2024-03-01T10:35:47.431663519+05:30" level=info msg=>
+Mar 01 10:35:47 Laptop-LX dockerd[2519]: time="2024-03-01T10:35:47.510802487+05:30" level=info msg=>
+Mar 01 10:35:47 Laptop-LX dockerd[2519]: time="2024-03-01T10:35:47.784303868+05:30" level=info msg=>
+Mar 01 10:35:47 Laptop-LX dockerd[2519]: time="2024-03-01T10:35:47.784906668+05:30" level=info msg=>
+Mar 01 10:35:48 Laptop-LX dockerd[2519]: time="2024-03-01T10:35:48.209844055+05:30" level=info msg=>
+
+
+```
+
+`$ vim /lib/systemd/system/docker.service`
+
+- To start the service: `sudo systemctl start <service>`
+- to stop a service: `sudo systemctl stop <service>`
+- after making changes, to start the service again:
+  `systemctl daemon-reload`
+
+
+`/etc/systemd/system/project-mercury-service`
+
+```
+[Unit]
+Description= Python Django for Project Mercury
+Documentation= http://wiki.
+
+After=postgresql.service # start the mercury python app after PostgresDB
+[Service]
+Execstart= /usr/bin/project-mercury.sh # program /usr/bin/project/project-mercury.sh
+User=project_mercury # use service account project_mercury
+
+Restart=on-failure # Auto restart on failure
+
+RestartSec= 10 # restart interval 10 sec
+
+
+[Install]
+WantedBy graphical.tartget # Load when booting into Graphical Mode
+
+```
+`Automatic log service by systemd`
